@@ -14,53 +14,42 @@ function setup() {
 }
 
 let speed = -1; // determines the speed
-let xPos = 0; // starting position on x-axis
+// starting positions on x-axis
+let xPos = 0;
+let xPosI = windowWidth / 3;
+let xPosII = 2 * xPosI;
+let xPosIII = 3 * xPosI;
+let xPosIV = 4 * xPosI;
 
 function draw() {
   background('white');
 
   xPos += speed;
 
-  //if(xPos > windowWidth) {
-  //  xPos = 0; // when xPos becomes greater than width, reset to 0
-  //}
+  if(xPos < - 4 * windowWidth / 3) {
+    xPos = 0; // when xPos becomes greater than width, reset to 0
+  }
 
   textSize(20);
   imageMode(CENTER);
+  image(cliv, xPos + 0 * windowWidth / 9, windowHeight / 2, 400, 400);
+  text('CIRCLE LIMIT IV (Jul. 1960)', xPos + 0 * windowWidth / 9, windowHeight / 5);
   // first set
-  image(cli, xPos - 9 * windowWidth / 9, windowHeight / 2, 400, 400);
-  text('CIRCLE LIMIT I (Nov. 1958)', xPos - 9 * windowWidth / 9, windowHeight / 5)
-  image(clii, xPos - 6 * windowWidth / 9, windowHeight / 2, 400, 400);
-  text('CIRCLE LIMIT II (Mar. 1959)', xPos - 6 * windowWidth / 9, windowHeight / 5)
-  image(cliii, xPos - 3 * windowWidth / 9, windowHeight / 2, 400, 400);
-  text('CIRCLE LIMIT III (Dec. 1959)', xPos - 3 * windowWidth / 9, windowHeight / 5)
-  image(cliv, xPos - 0 * windowWidth / 9, windowHeight / 2, 400, 400);
-  text('CIRCLE LIMIT IV (Jul. 1960)', xPos - 0 * windowWidth / 9, windowHeight / 5)
-  // second set
   image(cli, xPos + 3 * windowWidth / 9, windowHeight / 2, 400, 400);
-  text('CIRCLE LIMIT I (Nov. 1958)', xPos + 3 * windowWidth / 9, windowHeight / 5)
+  text('CIRCLE LIMIT I (Nov. 1958)', xPos + 3 * windowWidth / 9, windowHeight / 5);
   image(clii, xPos + 6 * windowWidth / 9, windowHeight / 2, 400, 400);
-  text('CIRCLE LIMIT II (Mar. 1959)', xPos + 6 * windowWidth / 9, windowHeight / 5)
+  text('CIRCLE LIMIT II (Mar. 1959)', xPos + 6 * windowWidth / 9, windowHeight / 5);
   image(cliii, xPos + 9 * windowWidth / 9, windowHeight / 2, 400, 400);
-  text('CIRCLE LIMIT III (Dec. 1959)', xPos + 9 * windowWidth / 9, windowHeight / 5)
+  text('CIRCLE LIMIT III (Dec. 1959)', xPos + 9 * windowWidth / 9, windowHeight / 5);
   image(cliv, xPos + 12 * windowWidth / 9, windowHeight / 2, 400, 400);
-  text('CIRCLE LIMIT IV (Jul. 1960)', xPos + 12 * windowWidth / 9, windowHeight / 5)
-  // third set
+  text('CIRCLE LIMIT IV (Jul. 1960)', xPos + 12 * windowWidth / 9, windowHeight / 5);
+  // second set
   image(cli, xPos + 15 * windowWidth / 9, windowHeight / 2, 400, 400);
-  text('CIRCLE LIMIT I (Nov. 1958)', xPos + 15 * windowWidth / 9, windowHeight / 5)
+  text('CIRCLE LIMIT I (Nov. 1958)', xPos + 15 * windowWidth / 9, windowHeight / 5);
   image(clii, xPos + 18 * windowWidth / 9, windowHeight / 2, 400, 400);
-  text('CIRCLE LIMIT II (Mar. 1959)', xPos + 18 * windowWidth / 9, windowHeight / 5)
+  text('CIRCLE LIMIT II (Mar. 1959)', xPos + 18 * windowWidth / 9, windowHeight / 5);
   image(cliii, xPos + 21 * windowWidth / 9, windowHeight / 2, 400, 400);
-  text('CIRCLE LIMIT III (Dec. 1959)', xPos + 21 * windowWidth / 9, windowHeight / 5)
+  text('CIRCLE LIMIT III (Dec. 1959)', xPos + 21 * windowWidth / 9, windowHeight / 5);
   image(cliv, xPos + 24 * windowWidth / 9, windowHeight / 2, 400, 400);
-  text('CIRCLE LIMIT IV (Jul. 1960)', xPos + 24 * windowWidth / 9, windowHeight / 5)
-  // fourth set
-  image(cli, xPos + 27 * windowWidth / 9, windowHeight / 2, 400, 400);
-  text('CIRCLE LIMIT I (Nov. 1958)', xPos + 27 * windowWidth / 9, windowHeight / 5)
-  image(clii, xPos + 30 * windowWidth / 9, windowHeight / 2, 400, 400);
-  text('CIRCLE LIMIT II (Mar. 1959)', xPos + 30 * windowWidth / 9, windowHeight / 5)
-  image(cliii, xPos + 33 * windowWidth / 9, windowHeight / 2, 400, 400);
-  text('CIRCLE LIMIT III (Dec. 1959)', xPos + 33 * windowWidth / 9, windowHeight / 5)
-  image(cliv, xPos + 36 * windowWidth / 9, windowHeight / 2, 400, 400);
-  text('CIRCLE LIMIT IV (Jul. 1960)', xPos + 36 * windowWidth / 9, windowHeight / 5)
+  text('CIRCLE LIMIT IV (Jul. 1960)', xPos + 24 * windowWidth / 9, windowHeight / 5);
 }

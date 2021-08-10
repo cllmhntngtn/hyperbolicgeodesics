@@ -24,12 +24,19 @@ let xPosIV = 4 * xPosI;
 function draw() {
   background('white');
 
+  push();
+  textSize(30);
+  text('WORKS BY M. C. ESCHER THAT INSPIRED THIS PROJECT',
+        windowWidth / 2, windowHeight / 10);
+  pop();
+
   xPos += speed;
 
   if(xPos < - 4 * windowWidth / 3) {
     xPos = 0; // when xPos becomes greater than width, reset to 0
   }
 
+  push();
   textSize(20);
   imageMode(CENTER);
   image(cliv, xPos + 0 * windowWidth / 9, windowHeight / 2, 400, 400);
@@ -52,4 +59,5 @@ function draw() {
   text('CIRCLE LIMIT III (Dec. 1959)', xPos + 21 * windowWidth / 9, windowHeight / 5);
   image(cliv, xPos + 24 * windowWidth / 9, windowHeight / 2, 400, 400);
   text('CIRCLE LIMIT IV (Jul. 1960)', xPos + 24 * windowWidth / 9, windowHeight / 5);
+  pop();
 }

@@ -1,12 +1,10 @@
-// Click and Drag an object
+var draggingA = false; // is a being dragged?
+var rolloverA = false; // is the mouse over a?
+var draggingB = false; // is b being dragged?
+var rolloverB = false; // is the mouse over b?
 
-var draggingA = false; // Is the object being dragged?
-var rolloverA = false; // Is the mouse over the ellipse?
-var draggingB = false; // Is the object being dragged?
-var rolloverB = false; // Is the mouse over the ellipse?
-
-var xA, yA, xB, yB, d;          // Location and size
-var offsetXA, offsetYA, offsetXB, offsetYB;    // Mouseclick offset
+var xA, yA, xB, yB, d;          // location and diameter
+var offsetXA, offsetYA, offsetXB, offsetYB;    // mouseclick offset
 
 var x = [];
 var y = [];
@@ -230,25 +228,33 @@ function draw() {
           5 * windowWidth / 6, (secondVertexLabelNumber + 1.5) * windowHeight / 20 + 2);
   }
   pop();
+
+  push();
+  textSize(20);
+  textFont('Futura-Bold');
+  text('CLICK AND DRAG THE POINTS TO', 2 * windowWidth / 7, windowHeight / 11);
+  text('MOVE THEM AROUND THE HALF-PLANE', 2 * windowWidth / 7, windowHeight / 11 + 20);
+  pop();
 }
 
 function mousePressed() {
-  // Did I click on the rectangle?
+  // did I click on a?
   if (mouseX > xA - d / 2 && mouseX < xA + d / 2 && mouseY > yA - d / 2 && mouseY < yA + d / 2) {
     draggingA = true;
-    // If so, keep track of relative location of click to corner of rectangle
+    // if so, keep track of relative location of click to centre of a
     offsetXA = xA - mouseX;
     offsetYA = yA - mouseY;
+    // did I click on b?
   } else if (mouseX > xB - d / 2 && mouseX < xB + d / 2 && mouseY > yB - d / 2 && mouseY < yB + d / 2) {
     draggingB = true;
-    // If so, keep track of relative location of click to corner of rectangle
+    // if so, keep track of relative location of click to centre of b
     offsetXB = xB - mouseX;
     offsetYB = yB - mouseY;
   }
 }
 
 function mouseReleased() {
-  // Quit dragging
+  // stop dragging
   draggingA = false;
   draggingB = false;
 }

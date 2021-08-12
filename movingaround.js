@@ -18,12 +18,23 @@ function setup() {
   background('white');
   textFont('Helvetica');
   textAlign(CENTER, CENTER);
+  
+  const xOrigin = windowWidth / 2;
+  const yOrigin = 6 * windowHeight / 7;
+
+  const xMin = windowWidth / 10;
+  const xMax = windowWidth - windowWidth / 10;
+  const yMin = 6 * windowHeight / 7;
+  const yMax = windowHeight / 15;
+
+  const xStep = windowWidth / 40;
+  const yStep = windowHeight / 20;
 
   // starting locations
-  xA = 432;
-  yA = 337.37142857142857;
-  xB = 1008;
-  yB = 337.37142857142857;
+  xA = xOrigin - 8 * xStep;
+  yA = yOrigin - 8 * yStep;
+  xB = xOrigin + 8 * yStep;
+  yB = yOrigin - 8 * yStep;
 
   // dimensions
   d = 25;
@@ -47,17 +58,6 @@ function draw() {
 
   // each square on the grid is 'windowWidth / 40' by 'windowHeight / 20'
   // (0,0) = (windowWidth / 2, 5 * windowHeight / 6)
-
-  const xOrigin = windowWidth / 2;
-  const yOrigin = 6 * windowHeight / 7;
-
-  const xMin = windowWidth / 10;
-  const xMax = windowWidth - windowWidth / 10;
-  const yMin = 6 * windowHeight / 7;
-  const yMax = windowHeight / 15;
-
-  const xStep = windowWidth / 40;
-  const yStep = windowHeight / 20;
 
   // drawing the half-plane
   push();

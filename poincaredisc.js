@@ -106,7 +106,7 @@ function addAnotherPair() {
   permIndex += 2;
 }
 
-// this is complex.js - I can't get it to work without including all 1400 lines of it in this file - collapse the function
+// this is complex.js - I can't get it to work without including all 1400 lines of it in this file - my work continues on line 1483
 (function(root) {
 
   'use strict';

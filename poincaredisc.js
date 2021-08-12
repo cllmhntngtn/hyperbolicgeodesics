@@ -3,7 +3,7 @@ function windowResized() {
 }
 
 function setup() {
-  createCanvas(windowWidth, 7 * windowHeight / 8);
+  createCanvas(windowWidth, 9 * windowHeight / 10);
   background('white');
   textFont('Helvetica');
   textAlign(CENTER, CENTER);
@@ -55,8 +55,18 @@ function setup() {
   buttonAddAnotherPair.style('background-color', 'whitesmoke');
 }
 
-var x = [];
-var y = [];
+var x = ['',''];
+var y = ['',''];
+
+
+var permSemiCentreX = new Array(26);
+var permSemiCentreY = new Array(26);
+var permSemiRadius = new Array(26);
+
+permIndex = 0;
+
+var permX = [];
+var permY = [];
 
 vertexLabels = 'abcdefghijklmnopqrstuvwxyz';
 firstVertexLabelNumber = 0;
@@ -64,33 +74,36 @@ secondVertexLabelNumber = 1;
 
 function reA() {
   var realA = inputReA.value();
-  x.push(realA);
-}
-
-function reB() {
-  var realB = inputReB.value();
-  x.push(realB);
+  x[0] = realA;
 }
 
 function imA() {
   var imagA = inputImA.value();
-  y.push(imagA);
+  y[0] = imagA;
+}
+
+function reB() {
+  var realB = inputReB.value();
+  x[1] = realB;
 }
 
 function imB() {
   var imagB = inputImB.value();
-  y.push(imagB);
+  y[1] = imagB;
 }
 
 function addAnotherPair() {
-  x.pop(); x.pop();
-  y.pop(); y.pop();
+  permX.push(x[0]); permX.push(x[1]);
+  permY.push(y[0]); permY.push(y[1]);
+  x = ['',''];
+  y = ['',''];
   inputReA.value('');
   inputImA.value('');
   inputReB.value('');
   inputImB.value('');
   firstVertexLabelNumber += 2;
   secondVertexLabelNumber += 2;
+  permIndex += 2;
 }
 
 // this is complex.js - I can't get it to work without including all 1400 lines of it in this file - collapse the function
@@ -1468,6 +1481,8 @@ function addAnotherPair() {
 })(this);
 
 function draw() {
+  background('white');
+
   push();
   noStroke();
   fill('white');
@@ -1510,6 +1525,10 @@ function draw() {
                       + (c[0]**2 + c[1]**2) * (b[0] - a[0])) / d;
   var semiRadius = dist(semiCentreX, semiCentreY, a[0], a[1]);
 
+  permSemiCentreX[permIndex] = semiCentreX;
+  permSemiCentreY[permIndex] = semiCentreY;
+  permSemiRadius[permIndex] = semiRadius;
+
   var alpha = acos((- semiRadius * (x[0] - semiCentreX)) / (semiRadius * sqrt((x[0] - semiCentreX) ** 2 + y[0] ** 2)));
   var beta = acos((- semiRadius * (x[1] - semiCentreX)) / (semiRadius * sqrt((x[1] - semiCentreX) ** 2 + y[1] ** 2)));
 
@@ -1518,13 +1537,15 @@ function draw() {
   strokeWeight(6);
   stroke('dodgerblue');
   noFill();
-  circle(semiCentreX, semiCentreY, 2 * semiRadius);
+  if (x[0] && y[0] && x[1] && y[1]) {
+    circle(semiCentreX, semiCentreY, 2 * semiRadius);
+  }
   pop();
 
   push();
   strokeWeight(6);
   noFill();
-  if (x[0] === '0' && x[1] === '0' && x.length === 2 && y.length === 2) {
+  if (x[0] === '0' && x[1] === '0' && y[0] && y[1]) {
     stroke('darkgray');
     line(xOrigin, 0, xOrigin, windowHeight);
     stroke('dodgerblue');
@@ -1583,14 +1604,100 @@ function draw() {
   pop();
 
   // drawing the circle points on the boundary
-  push();
-  strokeWeight(5);
-  fill('black');
-  if (x.length === 2 && y.length === 2) {
-      point(xOrigin + leftPointPD.re * 2 * windowHeight / 5, yOrigin - leftPointPD.im * 2 * windowHeight / 5, 25);
-      point(xOrigin + rightPointPD.re * 2 * windowHeight / 5, yOrigin - rightPointPD.im * 2 * windowHeight / 5, 25);
+  //push();
+  //strokeWeight(5);
+  //fill('black');
+  //if (x.length === 2 && y.length === 2) {
+  //    point(xOrigin + leftPointPD.re * 2 * windowHeight / 5, yOrigin - leftPointPD.im * 2 * windowHeight / 5, 25);
+  //    point(xOrigin + rightPointPD.re * 2 * windowHeight / 5, yOrigin - rightPointPD.im * 2 * windowHeight / 5, 25);
+  //}
+  //pop();
+
+  // permanent drawings for after pressing the addAnotherPair button
+
+  for (let index = 0; index < permX.length; index += 2) {
+
+      // converting the points in the half-plane to points in the disc and drawing them
+      let permz_1 = new Complex(permX[index], permY[index]);
+      let permhz_1 = (permz_1.sub(Complex['I'])).div(Complex['I'].mul(permz_1).sub(1));
+
+      let permz_2 = new Complex(permX[index + 1], permY[index + 1]);
+      let permhz_2 = (permz_2.sub(Complex['I'])).div(Complex['I'].mul(permz_2).sub(1));
+
+      // converting the points where the semi-circle meets the real line to points on the disc boundary
+      if (permX[index] && permY[index] && permX[index + 1] && permY[index + 1]) {
+        // calculating the relevant semi-circle
+        var permCircleCentre = (permX[index] ** 2 + permY[index] ** 2 - permX[index + 1] ** 2 - permY[index + 1] ** 2) / (2 * permX[index] - 2 * permX[index + 1]);
+        var permCircleRadius = dist(permX[index], permY[index], permCircleCentre, 0);
+      }
+      // left point
+      var permLeftPointX = permCircleCentre - permCircleRadius;
+      let permLeftPointUHP = new Complex(permLeftPointX, 0);
+      let permLeftPointPD = (permLeftPointUHP.sub(Complex['I'])).div(Complex['I'].mul(permLeftPointUHP).sub(1));
+      // rightPoint
+      var permRightPointX = permCircleCentre + permCircleRadius;
+      let permRightPointUHP = new Complex(permRightPointX, 0);
+      let permRightPointPD = (permRightPointUHP.sub(Complex['I'])).div(Complex['I'].mul(permRightPointUHP).sub(1));
+
+      // calculating the centre of the semi-circle which contains the geodesic
+      var permA = [xOrigin + permhz_1.re * discRadius, yOrigin - permhz_1.im * discRadius];
+      var permB = [xOrigin + permhz_2.re * discRadius, yOrigin - permhz_2.im * discRadius];
+      var permC = [xOrigin + permLeftPointPD.re * discRadius, yOrigin - permLeftPointPD.im * discRadius];
+      var permD = 2 * (permA[index] * (permB[index + 1] - permC[index + 1]) + permB[index] * (permC[index + 1] - permA[index + 1]) + permC[index] * (permA[index + 1] - permB[index + 1]));
+      var pSemiCentreX = ((permA[index]**2 + permA[index + 1]**2) * (permB[index + 1] - permC[index + 1]) + (permB[index]**2 + permB[index + 1]**2) * (permC[index + 1] - permA[index + 1])
+                          + (permC[index]**2 + permC[index + 1]**2) * (permA[index + 1] - permB[index + 1])) / permD;
+      var pSemiCentreY = ((permA[index]**2 + permA[index + 1]**2) * (permC[index] - permB[index]) + (permB[index]**2 + permB[index + 1]**2) * (permA[index] - permC[index])
+                          + (permC[index]**2 + permC[index + 1]**2) * (permB[index] - permA[index])) / permD;
+      var pSemiRadius = dist(pSemiCentreX, pSemiCentreY, permA[index], permA[index + 1]);
+
+      var pAlpha = acos((- pSemiRadius * (permX[index] - pSemiCentreX)) / (pSemiRadius * sqrt((permX[index] - pSemiCentreX) ** 2 + permY[index] ** 2)));
+      var pBeta = acos((- pSemiRadius * (permX[index + 1] - pSemiCentreX)) / (pSemiRadius * sqrt((permX[index + 1] - pSemiCentreX) ** 2 + permY[index + 1] ** 2)));
+
+      // drawing the geodesics
+      push();
+      strokeWeight(6);
+      stroke('dodgerblue');
+      noFill();
+      if (permX[index] && permY[index] && permX[index + 1] && permY[index + 1]) {
+        circle(permSemiCentreX[index], permSemiCentreY[index], 2 * permSemiRadius[index]);
+      }
+      pop();
+
+      push();
+      strokeWeight(6);
+      noFill();
+      if (permX[index] === '0' && permX[index + 1] === '0' && permY[index] && permY[index + 1]) {
+        stroke('darkgray');
+        line(xOrigin, 0, xOrigin, windowHeight);
+        stroke('dodgerblue');
+        line(xOrigin + permhz_1.re * discRadius, yOrigin - permhz_1.im * discRadius,
+              xOrigin + permhz_2.re * discRadius, yOrigin - permhz_2.im * discRadius);
+      }
+      pop();
+
+      // drawing the points in the disc
+      push();
+      strokeWeight(2);
+      fill('white');
+      if (permX[index] && permY[index]) {
+          circle(xOrigin + permhz_1.re * discRadius, yOrigin - permhz_1.im * discRadius, 25);
+      }
+      if (permX[index + 1] && permY[index + 1]) {
+          circle(xOrigin + permhz_2.re * discRadius, yOrigin - permhz_2.im * discRadius, 25);
+      }
+      fill('black');
+      textFont('Helvetica');
+      textSize(20);
+      if (permX[index] && permY[index]) {
+        text(vertexLabels[index],
+          xOrigin + permhz_1.re * discRadius, yOrigin - permhz_1.im * discRadius);
+      }
+      if (permX[index + 1] && permY[index + 1]) {
+        text(vertexLabels[index + 1],
+          xOrigin + permhz_2.re * discRadius, yOrigin - permhz_2.im * discRadius);
+      }
+      pop();
   }
-  pop();
 
   // whiteout of the background outside the disc
   push();
@@ -1627,6 +1734,19 @@ function draw() {
   text('Im(' + vertexLabels[secondVertexLabelNumber] + ')', windowWidth / 40, 5.5 * windowHeight / 20 + 10);
   pop();
 
-  // naming the inputted points - need to find a way to keep them when adding another pair
-
+  // naming the inputted points permanently
+  push();
+  for (let index = 0; index <= permX.length; index++) {
+    fill('black');
+    textFont('Helvetica');
+    textSize(20);
+    if (permX[index] && permY[index]) {
+      text(vertexLabels[index] + ' = ' + permX[index] + ' + ' + permY[index] + 'i',
+            9 * windowWidth / 10, (index + 1.5) * windowHeight / 30 + 2);
+    }
+    if (permX[index + 1] && permY[index + 1]) {
+      text(vertexLabels[index + 1] + ' = ' + permX[index + 1] + ' + ' + permY[index + 1] + 'i',
+            9 * windowWidth / 10, (index + 1 + 1.5) * windowHeight / 30 + 2);
+    }
+  }
 }

@@ -1,3 +1,7 @@
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
+
 var draggingA = false; // is a being dragged?
 var rolloverA = false; // is the mouse over a?
 var draggingB = false; // is b being dragged?
@@ -5,6 +9,8 @@ var rolloverB = false; // is the mouse over b?
 
 var xA, yA, xB, yB, d;          // location and diameter
 var offsetXA, offsetYA, offsetXB, offsetYB;    // mouseclick offset
+
+var xOrigin, yOrigin, xMin, xMax, yMin, yMax, xStep, yStep;
 
 var x = [];
 var y = [];
@@ -18,22 +24,22 @@ function setup() {
   background('white');
   textFont('Helvetica');
   textAlign(CENTER, CENTER);
-  
-  const xOrigin = windowWidth / 2;
-  const yOrigin = 6 * windowHeight / 7;
 
-  const xMin = windowWidth / 10;
-  const xMax = windowWidth - windowWidth / 10;
-  const yMin = 6 * windowHeight / 7;
-  const yMax = windowHeight / 15;
+  xOrigin = windowWidth / 2;
+  yOrigin = 6 * windowHeight / 7;
 
-  const xStep = windowWidth / 40;
-  const yStep = windowHeight / 20;
+  xMin = windowWidth / 10;
+  xMax = windowWidth - windowWidth / 10;
+  yMin = 6 * windowHeight / 7;
+  yMax = windowHeight / 15;
+
+  xStep = windowWidth / 40;
+  yStep = windowHeight / 20;
 
   // starting locations
   xA = xOrigin - 8 * xStep;
   yA = yOrigin - 8 * yStep;
-  xB = xOrigin + 8 * yStep;
+  xB = xOrigin + 8 * xStep;
   yB = yOrigin - 8 * yStep;
 
   // dimensions
@@ -47,10 +53,10 @@ function setup() {
 }
 
 function reset() {
-  xA = 432;
-  yA = 337.37142857142857;
-  xB = 1008;
-  yB = 337.37142857142857;
+  xA = xOrigin - 8 * xStep;
+  yA = yOrigin - 8 * yStep;
+  xB = xOrigin + 8 * xStep;
+  yB = yOrigin - 8 * yStep;
 }
 
 function draw() {

@@ -4,7 +4,7 @@ function windowResized() {
 
 function setup() {
   createCanvas(windowWidth, 9 * windowHeight / 10);
-  background('white');
+  //background('white');
   textFont('Helvetica');
   textAlign(CENTER, CENTER);
 
@@ -106,7 +106,7 @@ function addAnotherPair() {
   permIndex += 2;
 }
 
-// this is complex.js - I can't get it to work without including all 1400~ lines of it in this file - my work continues on line 1483
+// this is complex.js - I can't get it to work without including all 1400 lines of it in this file - my work continues on line 1483
 (function(root) {
 
   'use strict';
@@ -1529,16 +1529,53 @@ function draw() {
   permSemiCentreY[permIndex] = semiCentreY;
   permSemiRadius[permIndex] = semiRadius;
 
-  var alpha = acos((- semiRadius * (x[0] - semiCentreX)) / (semiRadius * sqrt((x[0] - semiCentreX) ** 2 + y[0] ** 2)));
-  var beta = acos((- semiRadius * (x[1] - semiCentreX)) / (semiRadius * sqrt((x[1] - semiCentreX) ** 2 + y[1] ** 2)));
-
   // drawing the geodesics
   push();
   strokeWeight(6);
-  stroke('dodgerblue');
+  stroke('darkgray');
   noFill();
   if (x[0] && y[0] && x[1] && y[1]) {
     circle(semiCentreX, semiCentreY, 2 * semiRadius);
+  }
+  pop();
+
+  //text(xOrigin + hz_1.re * discRadius, xOrigin, yOrigin-105);
+  //text(yOrigin - hz_1.im * discRadius, xOrigin, yOrigin-90);
+
+  //text(xOrigin + hz_2.re * discRadius, xOrigin, yOrigin-60);
+  //text(yOrigin - hz_2.im * discRadius, xOrigin, yOrigin-45);
+
+  //text(semiCentreX, xOrigin, yOrigin-15);
+  //text(semiCentreY, xOrigin, yOrigin);
+  //text(semiRadius, xOrigin, yOrigin+15);
+
+  // drawing the arc between points
+  push();
+  strokeWeight(6);
+  noFill();
+  stroke('dodgerblue');
+  // when semi centre is below both points
+  if (semiCentreY > yOrigin - hz_1.im * discRadius && semiCentreY > yOrigin - hz_2.im * discRadius) {
+    var alpha = acos((- semiRadius * (xOrigin + hz_1.re * discRadius - semiCentreX)) / (semiRadius * sqrt((xOrigin + hz_1.re * discRadius - semiCentreX) ** 2 + (yOrigin - hz_1.im * discRadius - semiCentreY) ** 2)));
+    var beta = acos((- semiRadius * (xOrigin + hz_2.re * discRadius - semiCentreX)) / (semiRadius * sqrt((xOrigin + hz_2.re * discRadius - semiCentreX) ** 2 + (yOrigin - hz_2.im * discRadius - semiCentreY) ** 2)));
+    if (xOrigin + hz_1.re * discRadius < xOrigin + hz_2.re * discRadius) {
+      arc(semiCentreX, semiCentreY, 2 * semiRadius, 2 * semiRadius,
+        PI + alpha, PI + beta, OPEN);
+    } else {
+      arc(semiCentreX, semiCentreY, 2 * semiRadius, 2 * semiRadius,
+        PI + beta, PI + alpha, OPEN);
+    }
+  // when semi centre is above both points
+} else if (semiCentreY <= yOrigin - hz_1.im * discRadius && semiCentreY <= yOrigin - hz_2.im * discRadius) {
+    var alpha = acos((semiRadius * (xOrigin + hz_1.re * discRadius - semiCentreX)) / (semiRadius * sqrt((xOrigin + hz_1.re * discRadius - semiCentreX) ** 2 + (yOrigin - hz_1.im * discRadius - semiCentreY) ** 2)));
+    var beta = acos((semiRadius * (xOrigin + hz_2.re * discRadius - semiCentreX)) / (semiRadius * sqrt((xOrigin + hz_2.re * discRadius - semiCentreX) ** 2 + (yOrigin - hz_2.im * discRadius - semiCentreY) ** 2)));
+    if (xOrigin + hz_1.re * discRadius < xOrigin + hz_2.re * discRadius) {
+      arc(semiCentreX, semiCentreY, 2 * semiRadius, 2 * semiRadius,
+        beta, alpha, OPEN);
+    } else {
+      arc(semiCentreX, semiCentreY, 2 * semiRadius, 2 * semiRadius,
+        alpha, beta, OPEN);
+    }
   }
   pop();
 
@@ -1616,87 +1653,114 @@ function draw() {
   // permanent drawings for after pressing the addAnotherPair button
 
   for (let index = 0; index < permX.length; index += 2) {
+    // converting the points in the half-plane to points in the disc and drawing them
+    let permz_1 = new Complex(permX[index], permY[index]);
+    let permhz_1 = (permz_1.sub(Complex['I'])).div(Complex['I'].mul(permz_1).sub(1));
 
-      // converting the points in the half-plane to points in the disc and drawing them
-      let permz_1 = new Complex(permX[index], permY[index]);
-      let permhz_1 = (permz_1.sub(Complex['I'])).div(Complex['I'].mul(permz_1).sub(1));
+    let permz_2 = new Complex(permX[index + 1], permY[index + 1]);
+    let permhz_2 = (permz_2.sub(Complex['I'])).div(Complex['I'].mul(permz_2).sub(1));
 
-      let permz_2 = new Complex(permX[index + 1], permY[index + 1]);
-      let permhz_2 = (permz_2.sub(Complex['I'])).div(Complex['I'].mul(permz_2).sub(1));
+    // converting the points where the semi-circle meets the real line to points on the disc boundary
+    if (permX[index] && permY[index] && permX[index + 1] && permY[index + 1]) {
+      // calculating the relevant semi-circle
+      var permCircleCentre = (permX[index] ** 2 + permY[index] ** 2 - permX[index + 1] ** 2 - permY[index + 1] ** 2) / (2 * permX[index] - 2 * permX[index + 1]);
+      var permCircleRadius = dist(permX[index], permY[index], permCircleCentre, 0);
+    }
 
-      // converting the points where the semi-circle meets the real line to points on the disc boundary
-      if (permX[index] && permY[index] && permX[index + 1] && permY[index + 1]) {
-        // calculating the relevant semi-circle
-        var permCircleCentre = (permX[index] ** 2 + permY[index] ** 2 - permX[index + 1] ** 2 - permY[index + 1] ** 2) / (2 * permX[index] - 2 * permX[index + 1]);
-        var permCircleRadius = dist(permX[index], permY[index], permCircleCentre, 0);
-      }
-      // left point
-      var permLeftPointX = permCircleCentre - permCircleRadius;
-      let permLeftPointUHP = new Complex(permLeftPointX, 0);
-      let permLeftPointPD = (permLeftPointUHP.sub(Complex['I'])).div(Complex['I'].mul(permLeftPointUHP).sub(1));
-      // rightPoint
-      var permRightPointX = permCircleCentre + permCircleRadius;
-      let permRightPointUHP = new Complex(permRightPointX, 0);
-      let permRightPointPD = (permRightPointUHP.sub(Complex['I'])).div(Complex['I'].mul(permRightPointUHP).sub(1));
+    // left point
+    var permLeftPointX = permCircleCentre - permCircleRadius;
+    let permLeftPointUHP = new Complex(permLeftPointX, 0);
+    let permLeftPointPD = (permLeftPointUHP.sub(Complex['I'])).div(Complex['I'].mul(permLeftPointUHP).sub(1));
+    // rightPoint
+    var permRightPointX = permCircleCentre + permCircleRadius;
+    let permRightPointUHP = new Complex(permRightPointX, 0);
+    let permRightPointPD = (permRightPointUHP.sub(Complex['I'])).div(Complex['I'].mul(permRightPointUHP).sub(1));
 
-      // calculating the centre of the semi-circle which contains the geodesic
-      var permA = [xOrigin + permhz_1.re * discRadius, yOrigin - permhz_1.im * discRadius];
-      var permB = [xOrigin + permhz_2.re * discRadius, yOrigin - permhz_2.im * discRadius];
-      var permC = [xOrigin + permLeftPointPD.re * discRadius, yOrigin - permLeftPointPD.im * discRadius];
-      var permD = 2 * (permA[index] * (permB[index + 1] - permC[index + 1]) + permB[index] * (permC[index + 1] - permA[index + 1]) + permC[index] * (permA[index + 1] - permB[index + 1]));
-      var pSemiCentreX = ((permA[index]**2 + permA[index + 1]**2) * (permB[index + 1] - permC[index + 1]) + (permB[index]**2 + permB[index + 1]**2) * (permC[index + 1] - permA[index + 1])
+    // calculating the centre of the semi-circle which contains the geodesic
+    var permA = [xOrigin + permhz_1.re * discRadius, yOrigin - permhz_1.im * discRadius];
+    var permB = [xOrigin + permhz_2.re * discRadius, yOrigin - permhz_2.im * discRadius];
+    var permC = [xOrigin + permLeftPointPD.re * discRadius, yOrigin - permLeftPointPD.im * discRadius];
+    var permD = 2 * (permA[index] * (permB[index + 1] - permC[index + 1]) + permB[index] * (permC[index + 1] - permA[index + 1]) + permC[index] * (permA[index + 1] - permB[index + 1]));
+    var pSemiCentreX = ((permA[index]**2 + permA[index + 1]**2) * (permB[index + 1] - permC[index + 1]) + (permB[index]**2 + permB[index + 1]**2) * (permC[index + 1] - permA[index + 1])
                           + (permC[index]**2 + permC[index + 1]**2) * (permA[index + 1] - permB[index + 1])) / permD;
-      var pSemiCentreY = ((permA[index]**2 + permA[index + 1]**2) * (permC[index] - permB[index]) + (permB[index]**2 + permB[index + 1]**2) * (permA[index] - permC[index])
+    var pSemiCentreY = ((permA[index]**2 + permA[index + 1]**2) * (permC[index] - permB[index]) + (permB[index]**2 + permB[index + 1]**2) * (permA[index] - permC[index])
                           + (permC[index]**2 + permC[index + 1]**2) * (permB[index] - permA[index])) / permD;
-      var pSemiRadius = dist(pSemiCentreX, pSemiCentreY, permA[index], permA[index + 1]);
+    var pSemiRadius = dist(pSemiCentreX, pSemiCentreY, permA[index], permA[index + 1]);
 
-      var pAlpha = acos((- pSemiRadius * (permX[index] - pSemiCentreX)) / (pSemiRadius * sqrt((permX[index] - pSemiCentreX) ** 2 + permY[index] ** 2)));
-      var pBeta = acos((- pSemiRadius * (permX[index + 1] - pSemiCentreX)) / (pSemiRadius * sqrt((permX[index + 1] - pSemiCentreX) ** 2 + permY[index + 1] ** 2)));
+    // drawing the geodesics
+    push();
+    strokeWeight(6);
+    stroke('darkgray');
+    noFill();
+    if (permX[index] && permY[index] && permX[index + 1] && permY[index + 1]) {
+      circle(permSemiCentreX[index], permSemiCentreY[index], 2 * permSemiRadius[index]);
+    }
+    pop();
 
-      // drawing the geodesics
-      push();
-      strokeWeight(6);
+    push();
+    strokeWeight(6);
+    noFill();
+    if (permX[index] === '0' && permX[index + 1] === '0' && permY[index] && permY[index + 1]) {
+      stroke('darkgray');
+      line(xOrigin, 0, xOrigin, windowHeight);
       stroke('dodgerblue');
-      noFill();
-      if (permX[index] && permY[index] && permX[index + 1] && permY[index + 1]) {
-        circle(permSemiCentreX[index], permSemiCentreY[index], 2 * permSemiRadius[index]);
-      }
-      pop();
+      line(xOrigin + permhz_1.re * discRadius, yOrigin - permhz_1.im * discRadius,
+            xOrigin + permhz_2.re * discRadius, yOrigin - permhz_2.im * discRadius);
+    }
+    pop();
 
-      push();
-      strokeWeight(6);
-      noFill();
-      if (permX[index] === '0' && permX[index + 1] === '0' && permY[index] && permY[index + 1]) {
-        stroke('darkgray');
-        line(xOrigin, 0, xOrigin, windowHeight);
-        stroke('dodgerblue');
-        line(xOrigin + permhz_1.re * discRadius, yOrigin - permhz_1.im * discRadius,
-              xOrigin + permhz_2.re * discRadius, yOrigin - permhz_2.im * discRadius);
+    // drawing the arc between points
+    push();
+    strokeWeight(6);
+    noFill();
+    stroke('dodgerblue');
+    // when semi centre is below both points
+    if (permSemiCentreY[index] > yOrigin - permhz_1.im * discRadius && permSemiCentreY[index] > yOrigin - permhz_2.im * discRadius) {
+      var permAlpha = acos((- permSemiRadius[index] * (xOrigin + permhz_1.re * discRadius - permSemiCentreX[index])) / (permSemiRadius[index] * sqrt((xOrigin + permhz_1.re * discRadius - permSemiCentreX[index]) ** 2 + (yOrigin - permhz_1.im * discRadius - permSemiCentreY[index]) ** 2)));
+      var permBeta = acos((- permSemiRadius[index] * (xOrigin + permhz_2.re * discRadius - permSemiCentreX[index])) / (permSemiRadius[index] * sqrt((xOrigin + permhz_2.re * discRadius - permSemiCentreX[index]) ** 2 + (yOrigin - permhz_2.im * discRadius - permSemiCentreY[index]) ** 2)));
+      if (xOrigin + permhz_1.re * discRadius < xOrigin + permhz_2.re * discRadius) {
+        arc(permSemiCentreX[index], permSemiCentreY[index], 2 * permSemiRadius[index], 2 * permSemiRadius[index],
+          PI + permAlpha, PI + permBeta, OPEN);
+      } else {
+        arc(permSemiCentreX[index], permSemiCentreY[index], 2 * permSemiRadius[index], 2 * permSemiRadius[index],
+          PI + permBeta, PI + permAlpha, OPEN);
       }
-      pop();
+    // when semi centre is above both points
+    } else if (permSemiCentreY[index] <= yOrigin - permhz_1.im * discRadius && permSemiCentreY[index] <= yOrigin - permhz_2.im * discRadius) {
+      var permAlpha = acos((permSemiRadius[index] * (xOrigin + permhz_1.re * discRadius - permSemiCentreX[index])) / (permSemiRadius[index] * sqrt((xOrigin + permhz_1.re * discRadius - permSemiCentreX[index]) ** 2 + (yOrigin - permhz_1.im * discRadius - permSemiCentreY[index]) ** 2)));
+      var permBeta = acos((permSemiRadius[index] * (xOrigin + permhz_2.re * discRadius - permSemiCentreX[index])) / (permSemiRadius[index] * sqrt((xOrigin + permhz_2.re * discRadius - permSemiCentreX[index]) ** 2 + (yOrigin - permhz_2.im * discRadius - permSemiCentreY[index]) ** 2)));
+      if (xOrigin + permhz_1.re * discRadius < xOrigin + permhz_2.re * discRadius) {
+        arc(permSemiCentreX[index], permSemiCentreY[index], 2 * permSemiRadius[index], 2 * permSemiRadius[index],
+          permBeta, permAlpha, OPEN);
+      } else {
+        arc(permSemiCentreX[index], permSemiCentreY[index], 2 * permSemiRadius[index], 2 * permSemiRadius[index],
+          permAlpha, permBeta, OPEN);
+      }
+    }
+    pop();
 
-      // drawing the points in the disc
-      push();
-      strokeWeight(2);
-      fill('white');
-      if (permX[index] && permY[index]) {
-          circle(xOrigin + permhz_1.re * discRadius, yOrigin - permhz_1.im * discRadius, 25);
-      }
-      if (permX[index + 1] && permY[index + 1]) {
-          circle(xOrigin + permhz_2.re * discRadius, yOrigin - permhz_2.im * discRadius, 25);
-      }
-      fill('black');
-      textFont('Helvetica');
-      textSize(20);
-      if (permX[index] && permY[index]) {
-        text(vertexLabels[index],
-          xOrigin + permhz_1.re * discRadius, yOrigin - permhz_1.im * discRadius);
-      }
-      if (permX[index + 1] && permY[index + 1]) {
-        text(vertexLabels[index + 1],
-          xOrigin + permhz_2.re * discRadius, yOrigin - permhz_2.im * discRadius);
-      }
-      pop();
+    // drawing the points in the disc
+    push();
+    strokeWeight(2);
+    fill('white');
+    if (permX[index] && permY[index]) {
+        circle(xOrigin + permhz_1.re * discRadius, yOrigin - permhz_1.im * discRadius, 25);
+    }
+    if (permX[index + 1] && permY[index + 1]) {
+        circle(xOrigin + permhz_2.re * discRadius, yOrigin - permhz_2.im * discRadius, 25);
+    }
+    fill('black');
+    textFont('Helvetica');
+    textSize(20);
+    if (permX[index] && permY[index]) {
+      text(vertexLabels[index],
+        xOrigin + permhz_1.re * discRadius, yOrigin - permhz_1.im * discRadius);
+    }
+    if (permX[index + 1] && permY[index + 1]) {
+      text(vertexLabels[index + 1],
+        xOrigin + permhz_2.re * discRadius, yOrigin - permhz_2.im * discRadius);
+    }
+    pop();
   }
 
   // whiteout of the background outside the disc

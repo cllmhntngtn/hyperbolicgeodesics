@@ -189,7 +189,7 @@ function draw() {
       arc(xOriginUHP + circleCentre * xStepUHP, yOriginUHP,
         2 * circleRadius * xStepUHP, 2 * circleRadius * yStepUHP,
         PI + alpha, PI + beta, OPEN);
-    } else if (x[0] > x[1] && x[0] >= 0 && x[1] >= 0) {
+    } else if (x[0] > x[1]) {
       stroke('darkgray');
       arc(xOriginUHP + circleCentre * xStepUHP, yOriginUHP,
         2 * circleRadius * xStepUHP, 2 * circleRadius * yStepUHP, PI, 0, OPEN);

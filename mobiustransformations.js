@@ -8,7 +8,7 @@ function setup() {
   textFont('Helvetica');
   textAlign(CENTER, CENTER);
 
-  inputReA = createInput('-3', 'number');
+  inputReA = createInput('-11', 'number');
   inputReA.position(windowWidth / 18, 3 * windowHeight / 20);
   inputReA.size(50);
   inputReA.style('font-size', '20px');
@@ -19,7 +19,7 @@ function setup() {
   buttonReA.style('background-color', 'whitesmoke');
 
 
-  inputImA = createInput('2', 'number');
+  inputImA = createInput('3', 'number');
   inputImA.position(windowWidth / 18, 4 * windowHeight / 20);
   inputImA.size(50);
   inputImA.style('font-size', '20px');
@@ -29,7 +29,7 @@ function setup() {
   buttonImA.style('font-size', '20px');
   buttonImA.style('background-color', 'whitesmoke');
 
-  inputReB = createInput('3', 'number');
+  inputReB = createInput('-3', 'number');
   inputReB.position(windowWidth / 18, 6 * windowHeight / 20);
   inputReB.size(50);
   inputReB.style('font-size', '20px');
@@ -39,7 +39,7 @@ function setup() {
   buttonReB.style('font-size', '20px');
   buttonReB.style('background-color', 'whitesmoke');
 
-  inputImB = createInput('2', 'number');
+  inputImB = createInput('4', 'number');
   inputImB.position(windowWidth / 18, 7 * windowHeight / 20);
   inputImB.size(50);
   inputImB.style('font-size', '20px');
@@ -1476,8 +1476,8 @@ function setup() {
 
 })(this);
 
-var x = [-3,3];
-var y = [2,2];
+var x = [-11,-3];
+var y = [3,4];
 
 var permX = [];
 var permY = [];

@@ -1476,8 +1476,8 @@ function setup() {
 
 })(this);
 
-var x = [-3,3];
-var y = [2,2];
+var x = [-11,3];
+var y = [-3,4];
 
 //var x = ['',''];
 //var y = ['',''];
